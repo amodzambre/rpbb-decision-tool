@@ -1,0 +1,228 @@
+{
+  "meta": {
+    "riskScoreMax": 100,
+    "riskBands": [
+      { "min": 70, "label": "High" },
+      { "min": 40, "label": "Moderate" },
+      { "min": 0, "label": "Low" }
+    ],
+    "confidenceByUnknowns": [
+      { "maxUnknowns": 0, "label": "High" },
+      { "maxUnknowns": 2, "label": "Medium" },
+      { "maxUnknowns": 999, "label": "Low" }
+    ],
+    "defaults": {
+      "baselineRisk": 10,
+      "forageAcreThresholdForCoordination": 2.0
+    }
+  },
+
+  "rulesInOrder": [
+    {
+      "id": "no_federal_nexus",
+      "whenAll": [{ "field": "federal_nexus", "equals": "No" }],
+      "outcome": {
+        "determination": "Outside Endangered Species Act Section 7 screening (no federal nexus)",
+        "riskScore": 0,
+        "unknowns": 0,
+        "whyText": "A federal nexus was not identified; Endangered Species Act Section 7 consultation applies to federal actions or actions with federal involvement.",
+        "nextAction": "If federal involvement is later identified (funding, authorization, or permitting), re-run this screening and coordinate as appropriate.",
+        "recommendations": [
+          "Confirm whether any federal funding, authorization, or permitting applies before finalizing the screening record."
+        ],
+        "drivers": [
+          { "label": "No federal nexus", "points": 0, "detail": "Endangered Species Act Section 7 consultation is triggered by federal involvement." }
+        ]
+      }
+    },
+
+    {
+      "id": "outside_high_potential_zone",
+      "whenAll": [
+        { "field": "federal_nexus", "equals": "Yes" },
+        { "field": "hpz_overlap", "equals": "No" }
+      ],
+      "outcome": {
+        "determination": "No Effect",
+        "riskScore": 0,
+        "unknowns": 0,
+        "whyText": "The action area was reported outside the High Potential Zone; based on the information provided, effect pathways for the rusty patched bumble bee are not expected under this screening.",
+        "nextAction": "Document the basis for the No Effect determination in the administrative record; Endangered Species Act Section 7 consultation is not required for this species.",
+        "recommendations": [
+          "Retain documentation supporting the High Potential Zone screening (for example, mapping outputs) in the administrative record."
+        ],
+        "drivers": [
+          { "label": "Outside High Potential Zone", "points": 0, "detail": "Action area reported outside the High Potential Zone." }
+        ]
+      }
+    },
+
+    {
+      "id": "hpz_unknown",
+      "whenAll": [
+        { "field": "federal_nexus", "equals": "Yes" },
+        { "field": "hpz_overlap", "equals": "Not sure" }
+      ],
+      "outcome": {
+        "determination": "May Affect—Contact U.S. Fish and Wildlife Service",
+        "riskScore": 55,
+        "unknowns": 3,
+        "whyText": "High Potential Zone overlap could not be confirmed; presence and exposure pathways cannot be ruled out without confirming overlap.",
+        "nextAction": "Coordinate with the U.S. Fish and Wildlife Service to confirm overlap and identify appropriate conservation measures, if needed.",
+        "recommendations": [
+          "Confirm High Potential Zone overlap using current planning outputs and retain records in the administrative file.",
+          "Define and document the action area, including indirect effects."
+        ],
+        "drivers": [
+          { "label": "High Potential Zone overlap uncertain", "points": 55, "detail": "Critical uncertainty increases screening risk and reduces confidence." }
+        ]
+      }
+    },
+
+    {
+      "id": "no_habitat_reported",
+      "whenAll": [
+        { "field": "federal_nexus", "equals": "Yes" },
+        { "field": "hpz_overlap", "equals": "Yes" },
+        { "field": "habitat_present", "equals": "No" }
+      ],
+      "outcome": {
+        "determination": "No Effect",
+        "riskScore": 5,
+        "unknowns": 1,
+        "whyText": "Suitable habitat was not reported in the action area. Based on the information provided, effect pathways are not expected; however, the screening record should document the habitat basis clearly.",
+        "nextAction": "Document the habitat screening basis in the administrative record; Endangered Species Act Section 7 consultation is not required for this species based on this screening.",
+        "recommendations": [
+          "Document habitat screening method and results (maps, site photos, desktop review) in the record."
+        ],
+        "drivers": [
+          { "label": "No habitat reported", "points": 5, "detail": "Effects are unlikely without habitat; confirm and document basis." }
+        ]
+      }
+    },
+
+    {
+      "id": "habitat_unknown",
+      "whenAll": [
+        { "field": "federal_nexus", "equals": "Yes" },
+        { "field": "hpz_overlap", "equals": "Yes" },
+        { "field": "habitat_present", "equals": "Not sure" }
+      ],
+      "outcome": {
+        "determination": "May Affect—Contact U.S. Fish and Wildlife Service",
+        "riskScore": 55,
+        "unknowns": 3,
+        "whyText": "Habitat presence could not be confirmed; exposure pathways cannot be ruled out without confirming habitat.",
+        "nextAction": "Coordinate to confirm habitat presence and evaluate effect pathways.",
+        "recommendations": [
+          "Confirm habitat presence using a documented desktop review and/or site verification.",
+          "Replace 'Not sure' responses with documented project details where feasible."
+        ],
+        "drivers": [
+          { "label": "Habitat presence uncertain", "points": 55, "detail": "Critical uncertainty increases screening risk and reduces confidence." }
+        ]
+      }
+    }
+  ],
+
+  "scoring": {
+    "baselineDrivers": [
+      { "label": "Baseline: High Potential Zone overlap and habitat present", "points": 10, "detail": "Exposure pathways are plausible and warrant stressor screening." }
+    ],
+    "unknownPenalties": [
+      { "field": "active_season_work", "equals": "Not sure", "points": 7, "label": "Active-season timing is uncertain" },
+      { "field": "overwinter_season_ground", "equals": "Not sure", "points": 7, "label": "Overwintering-season ground disturbance timing is uncertain" },
+      { "field": "herbicide_used", "equals": "Not sure", "points": 10, "label": "Herbicide use is uncertain" },
+      { "field": "forage_unavailable", "equals": "Not sure", "points": 8, "label": "Forage effects are uncertain" }
+    ],
+
+    "highRiskTriggers": [
+      {
+        "id": "insecticide_or_fungicide_in_or_near_habitat",
+        "whenAny": [
+          { "all": [{ "activitiesInclude": "Insecticide application" }, { "field": "insecticide_used", "notEquals": "No" }] },
+          { "all": [{ "activitiesInclude": "Fungicide application" }, { "field": "fungicide_used", "notEquals": "No" }] }
+        ],
+        "addPoints": 60,
+        "label": "Pesticide exposure risk (insecticide or fungicide)",
+        "detail": "Any insecticide or fungicide use in or near habitat within the High Potential Zone is treated as high risk.",
+        "outcome": {
+          "determination": "May Affect, Likely to Adversely Affect",
+          "whyText": "One or more high-risk stressors were identified that are commonly associated with adverse effects, including pesticide exposure risk in or near habitat within the High Potential Zone.",
+          "nextAction": "Consider redesigning the action to avoid high-risk stressors; if adverse effects remain likely, initiate formal consultation with the U.S. Fish and Wildlife Service."
+        }
+      }
+    ],
+
+    "conditionalTriggers": [
+      {
+        "id": "herbicide_high_risk_pathway",
+        "whenAll": [{ "activitiesInclude": "Herbicide application" }, { "field": "herbicide_used", "equals": "Yes" }],
+        "whenAny": [
+          { "field": "herbicide_method", "equals": "Broadcast (boom, aerial, widespread application)" },
+          { "field": "herbicide_method", "equals": "Not sure" },
+          { "field": "herbicide_exposure_risk", "equals": "Yes" },
+          { "field": "herbicide_exposure_risk", "equals": "Not sure" }
+        ],
+        "addPoints": 35,
+        "label": "Herbicide exposure or forage-loss pathway",
+        "detail": "Broadcast method, uncertain method, or potential direct exposure increases risk and typically warrants coordination.",
+        "outcome": {
+          "determination": "May Affect, Likely to Adversely Affect",
+          "whyText": "An elevated chemical exposure pathway was identified based on herbicide method and/or potential exposure timing.",
+          "nextAction": "Coordinate early on alternatives, buffers, timing restrictions, and restoration of native flowering resources."
+        }
+      },
+
+      {
+        "id": "forage_threshold_coordination",
+        "whenAll": [{ "field": "forage_unavailable", "equals": "Yes" }],
+        "numeric": { "field": "forage_acres", "gte": 2.0 },
+        "addPoints": 25,
+        "label": "Forage habitat affected is 2 acres or more (default coordination threshold)",
+        "detail": "This meets the tool’s default coordination threshold for forage impacts (2 acres or more).",
+        "outcome": {
+          "determination": "May Affect—Contact U.S. Fish and Wildlife Service",
+          "whyText": "A coordination trigger was identified based on foraging habitat impacts meeting the default acreage threshold.",
+          "nextAction": "Coordinate to confirm effect pathways and identify conservation measures that may support an informal consultation outcome where appropriate."
+        }
+      }
+    ],
+
+    "lowerRiskAdds": [
+      {
+        "id": "spot_only_herbicide_lower_risk",
+        "whenAll": [
+          { "activitiesInclude": "Herbicide application" },
+          { "field": "herbicide_used", "equals": "Yes" },
+          { "field": "herbicide_method", "equals": "Spot-only (wicking, glove, cut-stump, basal bark, limited spot spray)" },
+          { "field": "herbicide_exposure_risk", "equals": "No" }
+        ],
+        "addPoints": 10,
+        "label": "Spot-only herbicide use with reported exposure controls",
+        "detail": "Spot-only methods with timing controls are lower risk than broadcast applications, but still require avoidance measures."
+      },
+      {
+        "id": "forage_below_threshold",
+        "whenAll": [{ "field": "forage_unavailable", "equals": "Yes" }],
+        "numeric": { "field": "forage_acres", "lt": 2.0 },
+        "addPoints": 10,
+        "label": "Forage habitat affected is less than 2 acres",
+        "detail": "Below the default coordination threshold, but still a potential pathway depending on timing and floral continuity."
+      }
+    ],
+
+    "defaultOutcome": {
+      "determination": "May Affect, Not Likely to Adversely Affect",
+      "whyText": "The tool evaluated reported activities, timing, and thresholds and did not identify high-risk triggers based on the information provided.",
+      "nextAction": "Prepare an informal consultation package requesting concurrence, including action area description, habitat screening, timing, avoidance and minimization measures, and the basis for concluding effects are insignificant, discountable, or wholly beneficial."
+    },
+
+    "defaultRecommendations": [
+      "Confirm the action area and document how it was defined (including indirect effects).",
+      "Confirm High Potential Zone overlap using current planning outputs and retain records in the administrative file.",
+      "Avoid or minimize actions that reduce season-long floral resources; maintain continuous blooming resources across the active season.",
+      "Replace 'Not sure' responses with documented project details (maps, timing windows, chemical application plans, and acreage calculations) to increase confidence."
+    ]
+  }
+}

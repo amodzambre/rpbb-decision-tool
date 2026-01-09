@@ -1,0 +1,176 @@
+{
+  "title": "Rusty Patched Bumble Bee Screening Tool",
+  "showProgressBar": "top",
+  "progressBarType": "pages",
+  "showQuestionNumbers": "off",
+  "pages": [
+    {
+      "name": "projectInfo",
+      "title": "Project information",
+      "elements": [
+        { "type": "text", "name": "project_name", "title": "Project name / ID" },
+        { "type": "text", "name": "agency_applicant", "title": "Agency / applicant" },
+        { "type": "text", "name": "state", "title": "State" },
+        { "type": "text", "name": "county", "title": "County" }
+      ]
+    },
+    {
+      "name": "esaTrigger",
+      "title": "Endangered Species Act Section 7 trigger",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "federal_nexus",
+          "title": "Is this a federal action, or a non-federal action with federal funding, authorization, or permit involvement (a federal nexus)?",
+          "choices": ["Yes", "No"],
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "name": "hpz",
+      "title": "Rusty patched bumble bee screening",
+      "visibleIf": "{federal_nexus} = 'Yes'",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "hpz_overlap",
+          "title": "Does the action area overlap a rusty patched bumble bee High Potential Zone (for example, based on Information for Planning and Consultation results)?",
+          "choices": ["Yes", "No", "Not sure"],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "habitat_present",
+          "visibleIf": "{hpz_overlap} = 'Yes'",
+          "title": "Does the action area contain rusty patched bumble bee habitat (nesting, foraging, or overwintering habitat)?",
+          "description": "Examples: upland forests (overwintering), grasslands/shrublands/edges (nesting), and areas with season-long flowering resources (foraging).",
+          "choices": ["Yes", "No", "Not sure"],
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "name": "activities",
+      "title": "Project activities",
+      "visibleIf": "{federal_nexus} = 'Yes' and {hpz_overlap} = 'Yes' and {habitat_present} = 'Yes'",
+      "elements": [
+        {
+          "type": "checkbox",
+          "name": "activities_selected",
+          "title": "Which activities are included in the action or are reasonably certain to occur? (Select all that apply.)",
+          "choices": [
+            "Ground disturbance (grading, trenching, excavation, heavy equipment)",
+            "Vegetation management (mowing, brush cutting, tree removal, haying, grazing)",
+            "Prescribed fire",
+            "Herbicide application",
+            "Insecticide application",
+            "Fungicide application",
+            "New road or rail construction",
+            "Added lanes or major road expansion",
+            "Project increases traffic near habitat",
+            "Managed or commercial bees introduced (honey bees or managed bumble bees)",
+            "Seed collection from native flowering plants",
+            "Rodent control affecting native rodents or burrows",
+            "Drainage changes or increased surface flooding or soil saturation"
+          ],
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "name": "timing",
+      "title": "Timing and season",
+      "visibleIf": "{activities_selected.length} > 0",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "active_season_work",
+          "title": "Will any work occur during the rusty patched bumble bee active flight period (spring through fall)?",
+          "choices": ["Yes", "No", "Not sure"],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "overwinter_season_ground",
+          "title": "Will ground disturbance occur during the overwintering period (late fall through early spring)?",
+          "choices": ["Yes", "No", "Not sure"],
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "name": "forage",
+      "title": "Forage habitat effects",
+      "visibleIf": "{activities_selected} contains 'Vegetation management (mowing, brush cutting, tree removal, haying, grazing)' or {activities_selected} contains 'Prescribed fire'",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "forage_unavailable",
+          "title": "Will the action remove flowering plants, reduce blooms, or otherwise make forage unavailable (even temporarily)?",
+          "choices": ["Yes", "No", "Not sure"],
+          "isRequired": true
+        },
+        {
+          "type": "text",
+          "name": "forage_acres",
+          "visibleIf": "{forage_unavailable} = 'Yes'",
+          "title": "Acres of foraging habitat affected within the High Potential Zone (if known)",
+          "inputType": "number",
+          "min": 0
+        }
+      ]
+    },
+    {
+      "name": "chemicals",
+      "title": "Chemical use details",
+      "visibleIf": "{activities_selected} contains 'Herbicide application' or {activities_selected} contains 'Insecticide application' or {activities_selected} contains 'Fungicide application'",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "insecticide_used",
+          "visibleIf": "{activities_selected} contains 'Insecticide application'",
+          "title": "Will insecticides be applied in or near habitat within the High Potential Zone?",
+          "choices": ["Yes", "No", "Not sure"],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "fungicide_used",
+          "visibleIf": "{activities_selected} contains 'Fungicide application'",
+          "title": "Will fungicides be applied in or near habitat within the High Potential Zone?",
+          "choices": ["Yes", "No", "Not sure"],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "herbicide_used",
+          "visibleIf": "{activities_selected} contains 'Herbicide application'",
+          "title": "Will herbicides be applied in or near habitat within the High Potential Zone?",
+          "choices": ["Yes", "No", "Not sure"],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "herbicide_method",
+          "visibleIf": "{herbicide_used} = 'Yes'",
+          "title": "Herbicide method",
+          "choices": [
+            "Spot-only (wicking, glove, cut-stump, basal bark, limited spot spray)",
+            "Broadcast (boom, aerial, widespread application)",
+            "Not sure"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "herbicide_exposure_risk",
+          "visibleIf": "{herbicide_used} = 'Yes'",
+          "title": "Could herbicide contact bees directly (applied when bees are likely active/foraging or when flowering plants are present)?",
+          "choices": ["Yes", "No", "Not sure"],
+          "isRequired": true
+        }
+      ]
+    }
+  ]
+}
