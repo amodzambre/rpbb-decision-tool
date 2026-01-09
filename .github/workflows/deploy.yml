@@ -32,8 +32,9 @@ jobs:
 
       - name: Verify SurveyJS packages are installed
         run: |
-          node -p "require.resolve('survey-core/package.json')"
-          node -p "require.resolve('survey-react-ui/package.json')"
+          node -e "console.log('survey-core:', require('survey-core'))"
+          node -e "console.log('survey-react-ui:', require('survey-react-ui'))"
+
 
       - name: Build site
         run: npm run build
