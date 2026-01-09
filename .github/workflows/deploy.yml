@@ -27,14 +27,13 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-           - name: Install dependencies
+      - name: Install dependencies
         run: npm install
 
       - name: Verify SurveyJS packages are installed
         run: |
           node -p "require.resolve('survey-core/package.json')"
           node -p "require.resolve('survey-react-ui/package.json')"
-
 
       - name: Build site
         run: npm run build
