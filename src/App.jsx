@@ -7,6 +7,7 @@ import surveyJson from "./survey.json";
 import ruleset from "./decision-rules.json";
 import { evaluateDecision } from "./decisionEngine.js";
 
+
 function buildDocumentationText(data, result) {
   const activities = Array.isArray(data.activities_selected) && data.activities_selected.length
     ? data.activities_selected.join(", ")
@@ -37,7 +38,17 @@ export default function App() {
   }, []);
 
   return (
-    <div style={{ maxWidth: 980, margin: "0 auto", padding: 18, fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" }}>
+    <div
+  style={{
+    maxWidth: 980,
+    margin: "0 auto",
+    padding: 18,
+    fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+    background: "#f7f7f7",
+    borderRadius: 16
+  }}
+>
+
       <header style={{ marginBottom: 12 }}>
         <h2 style={{ margin: "6px 0" }}>
           Rusty Patched Bumble Bee (Bombus affinis) — Endangered Species Act Section 7 Screening Tool
@@ -48,7 +59,19 @@ export default function App() {
         </p>
       </header>
 
-      <Survey model={model} />
+      <div
+  style={{
+    background: "#ffffff",
+    border: "1px solid #e6e6e6",
+    borderRadius: 14,
+    padding: 16,
+    boxShadow: "0 1px 8px rgba(0,0,0,0.04)"
+  }}
+>
+  <Survey model={model} />
+</div>
+
+
 
       {result && (
         <section style={{ marginTop: 18 }}>
